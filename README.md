@@ -1,2 +1,2 @@
-# mcmc.Julia
+# mcmc.jl
 MCMC stuff for Julia
