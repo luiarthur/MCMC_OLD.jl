@@ -1,50 +1,37 @@
 module MCMC
-export Specifications, gibbs
 
-#=
-using Lazy
-function logfact(n)
- @bounce function loop(N, acc) 
-   N == 0? acc : loop(N-1, log(N) + acc)
- end
- x = loop(n,0.0)
- println(x)
- x
-end
+  export Specifications, gibbs, State
 
-=#
+  typealias State Dict{String,Any}
+  typealias FullConditionals Dict{String,Any}
 
-typealias State Dict{String,Any}
-
-type Specifications
-  init::Dict{String,Any}
-  fcs::Dict{String,Any}
-end
-
-function gibbs(specs::Specifications,B::Int,burn::Int)
-  out = [ State for i in 1:(B+burn) ]
-
-  init = specs.init
-  fcs = specs.fcs
-  params = 
-
-  function update(currState::State) 
-    function loop
-    end
-
+  immutable Specifications
+    init::State
+    fcs::FullConditionals
   end
 
-  out
-end
+  function gibbs(specs::Specifications,B::Int,burn::Int)
+    const out = Array{State,1}( (B+burn) )
+
+    const init = specs.init
+    const fcs = specs.fcs
+    const params = keys(init)
+    const d = length(params)
+
+    function update(currState::State)
+      newState = Dict( collect(currState) ) # important step!
+      for p in params
+        newState[p] = fcs[p](newState)
+      end
+      newState
+    end
+
+    out[1] = init
+    for i in 2:(B+burn)
+      out[i] = update(out[i-1])
+    end
+
+    out[(burn+1):end]
+  end
 
 end
-
-#= Tests
-f(x) = x + 1
-typeof(f)
-
-init = Dict(:mu => 1)
-fcs = Dict(:mu => f)
-specs = Specifications(init,fcs)
-=#
-
