@@ -52,7 +52,7 @@ end
 #= Personal tests:
 # to test: vulture test.jl julia --color=yes test.jl
 
-include("test.jl")
+include("runtests.jl")
 using RCall
 R"library(rcommon) # install_github('luairthur/rcommon')"
 plotPosts = R"plotPosts"
