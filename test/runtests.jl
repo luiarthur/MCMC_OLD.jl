@@ -1,8 +1,9 @@
+using MCMC
 using Base.Test
+
 @testset "Posterior Means" begin
   srand(1)
-  include("../src/mcmc.jl")
-  using Distributions, MCMC
+  using Distributions
 
   const n = 1000
   const μ = 5
