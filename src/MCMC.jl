@@ -17,7 +17,7 @@ module MCMC
   end
 
   """
-  Runs gibbs sampler with specifications (spec), samplers (B), 
+  Runs gibbs sampler with specifications (spec), samples (B), 
   and burn-in (burn). 
 
 
