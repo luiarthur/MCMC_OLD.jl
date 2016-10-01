@@ -8,8 +8,8 @@ module MCMC
 
   export Specifications, gibbs, State
 
-  typealias State Dict{String,Any}
-  typealias FullConditionals Dict{String,Any}
+  typealias State Dict{Symbol,Any}
+  typealias FullConditionals Dict{Symbol,Any}
 
   immutable Specifications
     init::State
@@ -37,34 +37,34 @@ module MCMC
   rig(shape::Float64,rate::Float64) = 1 / rand(Gamma(shape,1/rate))
 
   function updateσ²(param)
-    mu = param["mu"]
+    mu = param[:mu]
     ss = sum((y - mu).^2)
     rig(a+n/2, b+ss/2)
   end
 
   function updateμ(param)
-    s2 = param["sig2"]
+    s2 = param[:sig2]
     randn() * sqrt(s2/n) + ybar
   end
 
   const specs = Specifications(
     # init:
     Dict(
-      "mu" => 0,
-      "sig2" => 1
+      :mu => 0,
+      :sig2 => 1
     ),
     # full conditionals:
     Dict(
-      "mu" => updateμ,
-      "sig2" => updateσ²
+      :mu => updateμ,
+      :sig2 => updateσ²
     )
   )
 
   B = 10000
   @time out = gibbs(specs,B,1000)
 
-  postMu = [out[i]["mu"] for i in 1:B]
-  postSig2 = [out[i]["sig2"] for i in 1:B]
+  postMu = [out[i][:mu] for i in 1:B]
+  postSig2 = [out[i][:sig2] for i in 1:B]
 
   ```
   """
