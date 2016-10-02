@@ -3,3 +3,6 @@ My MCMC stuff for julia
 
 # To do:
 - docs?
+- Simultaneous updates
+  - Gibbs
+  - MH
