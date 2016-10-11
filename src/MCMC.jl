@@ -1,3 +1,4 @@
+__precompile__()
 """
 My MCMC stuff
 
