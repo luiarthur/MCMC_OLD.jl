@@ -7,7 +7,7 @@ like to add a Metropolis Hastings method.
 """
 module MCMC
 
-  export gibbs, GibbsState
+  export gibbs
   """
   Runs gibbs sampler with specifications (spec), samples (B), 
   and burn-in (burn). 
