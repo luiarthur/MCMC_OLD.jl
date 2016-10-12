@@ -7,7 +7,7 @@ like to add a Metropolis Hastings method.
 """
 module MCMC
 
-  export gibbs
+  export gibbs, mh_normal
   """
   Runs gibbs sampler with specifications (spec), samples (B), 
   and burn-in (burn). 
@@ -58,5 +58,35 @@ module MCMC
     end
     out[ (burn+1):end ]
   end
+
+  """
+  Univariate Metropolis Hastings step (with Normal proposal)
+
+      mh_normal(curr, loglike_plus_logprior, acc::Int, candSig::Real; 
+                inbounds = x-> -Inf<x<Inf)
+
+  # Arguments
+  * `curr`: current value of parameter
+  * `loglike_plus_logprior`: log-likelihoodd plus log-prior as function of the parameter to be updated
+  * `acc`: The current acceptance count 
+  * `candSig`: The sd of the normal proposal
+  * `inbounds`: A function which checks if the current parameter is in the support
+  """
+  function mh_normal(curr, loglike_plus_logprior, acc::Int, candSig::Real; 
+                     inbounds = x-> -Inf<x<Inf)
+    # need to do autotune
+
+    const cand = rand(Normal(curr,candSig))
+
+    if inbounds(cand)
+      u = log(rand())
+      p = loglike_plus_logprior(cand) - loglike_plus_logprior(curr)
+      p>u ?  (cand,acc+1) : (curr,acc)
+    else
+      (curr,acc)
+    end
+
+  end
+
 
 end # module
