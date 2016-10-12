@@ -7,6 +7,7 @@ like to add a Metropolis Hastings method.
 """
 module MCMC
 
+  import Distributions
   export gibbs, mh_normal
   """
   Runs gibbs sampler with specifications (spec), samples (B), 
@@ -76,7 +77,7 @@ module MCMC
                      inbounds = x-> -Inf<x<Inf)
     # need to do autotune
 
-    const cand = rand(Normal(curr,candSig))
+    const cand = rand(Distributions.Normal(curr,candSig))
 
     if inbounds(cand)
       u = log(rand())
