@@ -8,7 +8,7 @@ like to add a Metropolis Hastings method.
 module MCMC
 
 import Distributions
-export gibbs, mh_normal
+export gibbs, metropolis
 """
 Generalized Gibbs sampler.
 
@@ -70,30 +70,28 @@ function gibbs{T}(init::T, update, B::Int, burn::Int; printFreq::Int=0)
 end
 
 """
-Univariate Metropolis Hastings step (with Normal proposal)
+Univariate Metropolis step (with Normal proposal)
 
-    mh_normal(curr, loglike_plus_logprior, acc::Int, candSig::Real; 
-              inbounds = x-> -Inf<x<Inf)
+    metropolis(curr, loglike_plus_logprior, candSig::Real; 
+               inbounds = x-> -Inf<x<Inf)
 
 # Arguments
 * `curr`: current value of parameter
 * `loglike_plus_logprior`: log-likelihoodd plus log-prior as function of the parameter to be updated
-* `acc`: The current acceptance count 
 * `candSig`: The sd of the normal proposal
 * `inbounds`: A function which checks if the current parameter is in the support
 """
-function mh_normal(curr, loglike_plus_logprior, acc::Int, candSig::Real; 
-                   inbounds = x-> -Inf<x<Inf)
+function metropolis(curr, loglike_plus_logprior, candSig::Real; 
+                    inbounds = x-> -Inf<x<Inf)
   # need to do autotune
 
   const cand = rand(Distributions.Normal(curr,candSig))
 
   if inbounds(cand)
-    u = log(rand())
     p = loglike_plus_logprior(cand) - loglike_plus_logprior(curr)
-    p>u ?  (cand,acc+1) : (curr,acc)
+    p > log(rand()) ?  cand : curr
   else
-    (curr,acc)
+    curr
   end
 
 end
