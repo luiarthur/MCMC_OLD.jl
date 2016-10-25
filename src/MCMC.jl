@@ -96,4 +96,9 @@ function metropolis(curr, loglike_plus_logprior, candSig::Real;
 
 end
 
+function dic{T}(param::Array{T,1},loglike)
+  D = -2 * loglike.(param)
+  mean(D) + var(D) / 2
+end
+
 end # module
