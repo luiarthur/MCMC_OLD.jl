@@ -96,6 +96,27 @@ function metropolis(curr, loglike_plus_logprior, candSig::Real;
 
 end
 
+function metropolis(curr::Vector{Float64}, candΣ::Matrix{Float64},
+                    loglike_plus_logprior)
+
+  const cand = rand( Distributions.MvNormal(curr,candΣ) )
+  const J = length(curr)
+  const newState = Vector{Float64}(J)
+
+  if  loglike_plus_logprior(cand) - loglike_plus_logprior(curr) > log(rand())
+    for j in J
+      newState[j] = cand[j]
+    end
+  else
+    for j in J
+      newState[j] = curr[j]
+    end
+  end
+
+  return newState
+end
+
+
 function dic{T}(param::Array{T,1},loglike)
   D = -2 * loglike.(param)
   mean(D) + var(D) / 2
