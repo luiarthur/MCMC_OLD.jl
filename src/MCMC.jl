@@ -101,19 +101,14 @@ function metropolis(curr::Vector{Float64}, candΣ::Matrix{Float64},
 
   const cand = rand( Distributions.MvNormal(curr,candΣ) )
   const J = length(curr)
-  const newState = Vector{Float64}(J)
 
   if loglike_plus_logprior(cand) - loglike_plus_logprior(curr) > log(rand())
-    for j in J
-      newState[j] = cand[j]
-    end
+    new_state = copy(cand)
   else
-    for j in J
-      newState[j] = curr[j]
-    end
+    new_state = copy(curr)
   end
 
-  return newState
+  return new_state
 end
 
 
