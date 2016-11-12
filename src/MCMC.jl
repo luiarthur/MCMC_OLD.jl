@@ -110,6 +110,18 @@ function metropolis(curr::Vector{Float64}, candΣ::Matrix{Float64},
   return new_state
 end
 
+function metropolis(curr::Vector{Float64}, cs::Float64, loglike_plus_logprior)
+
+  const cand = rand( Distributions.Normal(curr,cs) )
+
+  if loglike_plus_logprior(cand) - loglike_plus_logprior(curr) > log(rand())
+    new_state = cand
+  else
+    new_state = curr
+  end
+
+  return new_state
+end
 
 function dic{T}(param::Array{T,1},loglike)
   D = -2 * loglike.(param)
