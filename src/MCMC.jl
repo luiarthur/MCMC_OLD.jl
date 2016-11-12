@@ -110,7 +110,7 @@ function metropolis(curr::Vector{Float64}, candΣ::Matrix{Float64},
   return new_state
 end
 
-function metropolis(curr::Vector{Float64}, cs::Float64, loglike_plus_logprior)
+function metropolis(curr::Float64, cs::Float64, loglike_plus_logprior)
 
   const cand = rand( Distributions.Normal(curr,cs) )
 
